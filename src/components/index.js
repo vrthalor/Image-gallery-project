@@ -13,14 +13,6 @@ function Home() {
     })
     return (
         <div className="App">
-            {/* <h2>This is home {name}</h2> */}
-            <Navbar setSelected={setSelected} selected={selected}/>
-            {selected == 1 && <ImageGalleryComponentOne />}
-            {selected == 2 && <ImageGalleryComponentTwo />}
-            {selected == 3 && <ImageGalleryComponentThree />}
-
-
-
         </div>
     );
 }

@@ -1,22 +1,34 @@
 import React, { useEffect, useState } from 'react';
 // import './App.css';
 import Lightbox from 'lightbox-react';
-import { data } from '../../static/data'
+// import { data } from '../../static/data'
 import 'lightbox-react/style.css';
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import {config} from '../../utils/apiUrl';
+import API from '../../utils/apiCalling'
 function ImageGalleryComponentOne() {
+    const api = new API()
     const [name, setName] = useState("")
     const [photoIndex, setPhotoIndex] = useState(0)
     const [galleryDetails, setGalleryDetails] = useState([])
+    const [data, setData] = useState([])
     const [isOpen, setIsOpen] = useState(false)
     const [searchText, setSearchText] = useState("")
 
     useEffect(() => {
-        setName("Demo")
-        setGalleryDetails(data)
-        console.log(data)
-    }, [data])
+        getGallery()
+    }, [])
+
+    const getGallery = async() => {
+        const result = await api.get(config.getGallery)
+        if (result && result.data && result.data.length>0) {
+            // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", result)
+            setGalleryDetails(result.data)
+        } else {
+            console.log(result && result.message)
+        }
+    }
     const openImageFun = (index) => {
         console.log(index)
         setPhotoIndex(index)

@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 // import './App.css';
 import Lightbox from 'lightbox-react';
-import { data } from '../../static/data'
+// import { data } from '../../static/data'
 import 'lightbox-react/style.css';
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Pagination from '@material-ui/lab/Pagination';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import { makeStyles } from '@material-ui/core/styles';
-
+import {config} from '../../utils/apiUrl';
+import API from '../../utils/apiCalling'
 const useStyles = makeStyles((theme) => ({
     root: {
         '& > *': {
@@ -18,10 +19,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ImageGalleryComponentTwo() {
+    const api = new API()
     const classes = useStyles();
     const [name, setName] = useState("")
     const [photoIndex, setPhotoIndex] = useState(0)
     const [galleryDetails, setGalleryDetails] = useState([])
+    const [data, setData] = useState([])
     const [isOpen, setIsOpen] = useState(false)
     const [searchText, setSearchText] = useState("")
 
@@ -31,12 +34,21 @@ function ImageGalleryComponentTwo() {
     const [currentDataCount, setCurrentDataCount] = useState(0)
 
     useEffect(() => {
-        setName("Demo")
-        console.log(data)
-        setTotalPage(data.length/4)
-        setGalleryDetails(data.slice(0, 4 ))
         setIndexing(1)
-    }, [data])
+        getGallery()
+    }, [])
+
+    const getGallery = async() => {
+        const result = await api.get(config.getGallery)
+        if (result && result.data && result.data.length>0) {
+            // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", result)
+            setData(result.data)
+            setTotalPage(result.data.length/4)
+            setGalleryDetails(result.data.slice(0, 4 ))
+        } else {
+            console.log(result && result.message)
+        }
+    }
     const openImageFun = (index) => {
         console.log(index)
         setPhotoIndex(index)
@@ -51,7 +63,6 @@ function ImageGalleryComponentTwo() {
         setIndexing(value)
         setPage(value)
         setGalleryDetails(data.slice((value*4)-4, 4*value))
-
     }
     return (
         <div className="App">
